@@ -1,0 +1,152 @@
+<script src="react.development.js"></script>
+<script src="babel.min.js"></script>
+<script src="react-dom.development.js"></script>
+<style>
+   
+    body{
+        margin:0
+    }
+    .header{
+        text-align: center;
+        font-size: 50px;
+        font-weight: bold;
+        background: yellow;
+    }
+    #footer{
+        position: fixed;
+    bottom: 0;
+    background: yellow;
+    width: 100%;
+    text-align: center;
+    font-size: 18px;
+    font-weight: bold;
+    }
+    .menu{
+        margin: 0;
+    list-style-type: none;
+    text-align: right;
+    background: greenyellow;
+    line-height: 40px;
+    }
+    .menu > li{
+        display: inline;
+    margin-right: 15px;
+    letter-spacing: 4px;
+    cursor: pointer;
+    }
+    .menu-active{
+        color:red;
+        font-size: 20px;
+        font-weight: bold;
+    }
+    .mobile-menu-btn{
+        position: absolute;
+        right: 0;
+        top: 45px;
+    }
+    .mobile-menu{
+        width: 100px;
+        display: inline-block;
+        position: absolute;
+        top: 45px;
+        transition: left 1s;
+        text-align: left !important;
+    }
+    .mobile-menu > li{
+        display: block !important;
+    }
+    @media screen and (max-width:600px) {
+        .header{
+            font-size: 40px;
+        }
+    }
+</style>
+<div id="root"></div>
+<script type="text/babel">
+    const Home=()=>{
+        return <h1>This is Home Component</h1>
+    }
+    const About=()=>{
+        return <h1>This is About Component</h1>
+    }
+    const Contact=()=>{
+        return <h1>This is Contact Component</h1>
+    }
+    class Menu extends React.Component{
+        
+        state={
+            menuItem:'home',
+            isMobileView:document.body.offsetWidth < 600 ? true:false,
+            left:-140
+        }
+        constructor(){
+            super()
+            let flag=true;
+            let timeoutId;
+            window.addEventListener('resize',()=>{
+                if(flag){
+                    this.fnUpdateWindowWidth()
+                    flag=false
+                }
+                clearTimeout(timeoutId)
+                timeoutId=setTimeout(()=>{
+                    this.fnUpdateWindowWidth()
+                },100)
+                
+            })
+        }
+        fnUpdateWindowWidth(){
+            let width=document.body.offsetWidth
+                this.setState({
+                    isMobileView:width<600?true:false
+                })
+        }
+        fnMenuClick=(eve)=>{
+            eve.stopPropagation()
+            const {tagName,id}=eve.target
+            if(tagName=='UL')return;
+            this.setState({
+                menuItem:id,
+                left:-140
+            })
+        }
+        fnMobileMenuBtnClick=()=>{
+            this.setState({
+                left:this.state.left==0 ? -140 : 0
+            })
+        }
+        render(){
+            const {menuItem,isMobileView,left}=this.state
+            return <div>
+                {isMobileView && <button onClick={this.fnMobileMenuBtnClick} className='mobile-menu-btn'>menu</button>}
+                <ul style={{left}} className={`${isMobileView && 'mobile-menu'} menu`} onClick={this.fnMenuClick}>
+                    <li className={menuItem == 'home' && 'menu-active'} id='home'>Home</li>
+                    <li className={menuItem == 'about' && 'menu-active'} id='about'>About</li>
+                    <li className={menuItem == 'contact' && 'menu-active'} id='contact'>Contact</li>
+                </ul>
+                  {menuItem == 'home' && <Home />}
+                  {menuItem == 'about' && <About />}
+                  {menuItem == 'contact' && <Contact />}
+
+                
+                </div>
+        }
+    }
+   
+    const Footer=()=>{
+        return <div id='footer'>&copy; rights belongs to me.</div>
+    }
+    const Header=()=>{
+        return <div className='header'>My First React WebPage</div>
+    }
+    const App=()=>{
+      
+        return <div>
+               <Header />
+               <Menu />
+               <Footer />
+            </div>
+    }
+   const container= ReactDOM.createRoot(document.getElementById('root'));
+   container.render(<App />)
+</script>

@@ -1,0 +1,12 @@
+.header
+{
+    text-align: center;
+        font-size: 40px;
+        font-weight: bold;
+        background: yellow;
+}
+@media screen and (max-width:600px) {
+    .header{
+        font-size: 40px;
+    }
+}
